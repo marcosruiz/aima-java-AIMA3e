@@ -35,17 +35,23 @@ public class FichasFunctionFactory {
 
 			Set<Action> actions = new LinkedHashSet<Action>();
 
-			if (board.canMoveGap(FichasBoard.UP)) {
-				actions.add(FichasBoard.UP);
+			if (board.canMoveGap(FichasBoard.ONE_LEFT)) {
+				actions.add(FichasBoard.ONE_LEFT);
 			}
-			if (board.canMoveGap(FichasBoard.DOWN)) {
-				actions.add(FichasBoard.DOWN);
+			if (board.canMoveGap(FichasBoard.ONE_RIGHT)) {
+				actions.add(FichasBoard.ONE_RIGHT);
 			}
-			if (board.canMoveGap(FichasBoard.LEFT)) {
-				actions.add(FichasBoard.LEFT);
+			if (board.canMoveGap(FichasBoard.TWO_LEFT)) {
+				actions.add(FichasBoard.TWO_LEFT);
 			}
-			if (board.canMoveGap(FichasBoard.RIGHT)) {
-				actions.add(FichasBoard.RIGHT);
+			if (board.canMoveGap(FichasBoard.TWO_RIGHT)) {
+				actions.add(FichasBoard.TWO_RIGHT);
+			}
+			if (board.canMoveGap(FichasBoard.THREE_LEFT)) {
+				actions.add(FichasBoard.THREE_LEFT);
+			}
+			if (board.canMoveGap(FichasBoard.THREE_RIGHT)) {
+				actions.add(FichasBoard.THREE_RIGHT);
 			}
 
 			return actions;
@@ -56,25 +62,35 @@ public class FichasFunctionFactory {
 		public Object result(Object s, Action a) {
 			FichasBoard board = (FichasBoard) s;
 
-			if (FichasBoard.UP.equals(a)
-					&& board.canMoveGap(FichasBoard.UP)) {
+			if (FichasBoard.ONE_LEFT.equals(a)
+					&& board.canMoveGap(FichasBoard.ONE_LEFT)) {
 				FichasBoard newBoard = new FichasBoard(board);
-				newBoard.moveGapUp();
+				newBoard.moveGapLeft(1);
 				return newBoard;
-			} else if (FichasBoard.DOWN.equals(a)
-					&& board.canMoveGap(FichasBoard.DOWN)) {
+			} else if (FichasBoard.ONE_RIGHT.equals(a)
+					&& board.canMoveGap(FichasBoard.ONE_RIGHT)) {
 				FichasBoard newBoard = new FichasBoard(board);
-				newBoard.moveGapDown();
+				newBoard.moveGapRight(1);
 				return newBoard;
-			} else if (FichasBoard.LEFT.equals(a)
-					&& board.canMoveGap(FichasBoard.LEFT)) {
+			} else if (FichasBoard.TWO_LEFT.equals(a)
+					&& board.canMoveGap(FichasBoard.TWO_LEFT)) {
 				FichasBoard newBoard = new FichasBoard(board);
-				newBoard.moveGapLeft();
+				newBoard.moveGapLeft(2);
 				return newBoard;
-			} else if (FichasBoard.RIGHT.equals(a)
-					&& board.canMoveGap(FichasBoard.RIGHT)) {
+			} else if (FichasBoard.TWO_RIGHT.equals(a)
+					&& board.canMoveGap(FichasBoard.TWO_RIGHT)) {
 				FichasBoard newBoard = new FichasBoard(board);
-				newBoard.moveGapRight();
+				newBoard.moveGapRight(2);
+				return newBoard;
+			} else if (FichasBoard.THREE_LEFT.equals(a)
+					&& board.canMoveGap(FichasBoard.THREE_LEFT)) {
+				FichasBoard newBoard = new FichasBoard(board);
+				newBoard.moveGapLeft(3);
+				return newBoard;
+			} else if (FichasBoard.THREE_RIGHT.equals(a)
+					&& board.canMoveGap(FichasBoard.THREE_RIGHT)) {
+				FichasBoard newBoard = new FichasBoard(board);
+				newBoard.moveGapRight(3);
 				return newBoard;
 			}
 

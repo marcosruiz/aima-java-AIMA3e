@@ -7,8 +7,7 @@ import aima.core.search.framework.GoalTest;
  * 
  */
 public class FichasGoalTest implements GoalTest {
-	FichasBoard goal = new FichasBoard(new int[] { 0, 1, 2, 3, 4, 5,
-			6, 7, 8 });
+	FichasBoard goal = new FichasBoard(new int[] { 2,2,2,0,1,1,1 });
 
 	public boolean isGoalState(Object state) {
 		FichasBoard board = (FichasBoard) state;
