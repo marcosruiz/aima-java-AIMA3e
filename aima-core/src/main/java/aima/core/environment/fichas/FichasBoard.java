@@ -32,7 +32,7 @@ public class FichasBoard {
 	//
 
 	public FichasBoard() {
-		state = new int[] { 2,2,2,0,1,1,1 };
+		state = new int[] { 1,1,1,0,2,2,2 };
 	}
 
 	public FichasBoard(int[] state) {
@@ -54,36 +54,34 @@ public class FichasBoard {
 
 	public XLocation getLocationOf(int val) {
 		int absPos = getPositionOf(val);
-		return new XLocation(getXCoord(absPos));
+		return new XLocation(absPos);
 	}
 
 	public void moveGapRight(int i) {
 		int gapPos = getGapPosition();
-		int xpos = getXCoord(gapPos);
-		if (xpos <= (6-i)) {
-			int valueOnRight = getValueAt(xpos+i);
-			setValue(xpos, valueOnRight);
-			setValue(xpos+i, 0);
+		if (gapPos <= (6-i)) {
+			int valueOnRight = getValueAt(gapPos+i);
+			setValue(gapPos, valueOnRight);
+			setValue(gapPos+i, 0);
 		}
 
 	}
 
 	public void moveGapLeft(int i) {
 		int gapPos = getGapPosition();
-		int xpos = getXCoord(gapPos);
-		if (xpos >= (0+i)) {
-			int valueOnLeft = getValueAt(xpos - i);
-			setValue(xpos,valueOnLeft);
-			setValue(xpos - i, 0);
+		if (gapPos >= (0+i)) {
+			int valueOnLeft = getValueAt(gapPos - i);
+			setValue(gapPos,valueOnLeft);
+			setValue(gapPos - i, 0);
 		}
 
 	}
 
 	public List<XLocation> getPositions() {
 		ArrayList<XLocation> retVal = new ArrayList<XLocation>();
-		for (int i = 0; i < 9; i++) {
+		for (int i = 0; i < 7; i++) {
 			int absPos = getPositionOf(i);
-			XLocation loc = new XLocation(getXCoord(absPos));
+			XLocation loc = new XLocation(absPos);
 			retVal.add(loc);
 
 		}
@@ -103,17 +101,17 @@ public class FichasBoard {
 		boolean retVal = true;
 		int absPos = getPositionOf(0);
 		if (where.equals(ONE_LEFT))
-			retVal = (getXCoord(absPos) > 0);
+			retVal = (absPos > 0);
 		else if (where.equals(ONE_RIGHT))
-			retVal = (getXCoord(absPos) < 6);
+			retVal = (absPos < 6);
 		else if (where.equals(TWO_RIGHT))
-			retVal = (getXCoord(absPos) > 1);
+			retVal = (absPos > 1);
 		else if (where.equals(TWO_RIGHT))
-			retVal = (getXCoord(absPos) < 5);
+			retVal = (absPos < 5);
 		else if (where.equals(THREE_RIGHT))
-			retVal = (getXCoord(absPos) > 2);
+			retVal = (absPos > 2);
 		else if (where.equals(THREE_RIGHT))
-			retVal = (getXCoord(absPos) < 4);
+			retVal = (absPos < 4);
 		return retVal;
 	}
 
@@ -136,7 +134,7 @@ public class FichasBoard {
 		return true;
 	}
 
-	@Override
+	/*@Override
 	public int hashCode() {
 		int result = 17;
 		for (int i = 0; i < 7; i++) {
@@ -144,7 +142,7 @@ public class FichasBoard {
 			result = 37 * result + position;
 		}
 		return result;
-	}
+	}*/
 
 	@Override
 	public String toString() {
@@ -162,9 +160,9 @@ public class FichasBoard {
 	 * Note: The graphic representation maps x values on row numbers (x-axis in
 	 * vertical direction).
 	 */
-	private int getXCoord(int absPos) {
+	/*private int getXCoord(int absPos) {
 		return absPos;
-	}
+	}*/
 
 
 	private int getAbsPosition(int x) {

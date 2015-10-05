@@ -116,11 +116,4 @@ public class XLocation {
 	public String toString() {
 		return " ( " + xCoOrdinate + " ) ";
 	}
-
-	@Override
-	public int hashCode() {
-		int result = 17;
-		result = 37 * result + xCoOrdinate;
-		return result;
-	}
 }

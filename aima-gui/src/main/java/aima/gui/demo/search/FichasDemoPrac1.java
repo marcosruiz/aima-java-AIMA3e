@@ -14,9 +14,6 @@ import aima.core.search.framework.ResultFunction;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
 import aima.core.search.framework.TreeSearch;
-import aima.core.search.informed.AStarSearch;
-import aima.core.search.informed.GreedyBestFirstSearch;
-import aima.core.search.local.SimulatedAnnealingSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
 import aima.core.search.uninformed.DepthFirstSearch;
 import aima.core.search.uninformed.DepthLimitedSearch;
@@ -31,13 +28,14 @@ public class FichasDemoPrac1 {
 	static FichasBoard startBoard = new FichasBoard(new int[] { 1,1,1,0,2,2,2 });
 
 	public static void main(String[] args) {
+		
 		//fichasDemo(new BreadthFirstSearch(new TreeSearch()),startBoard,"breadth first search in Tree");
 		
-		fichasDemo(new BreadthFirstSearch(new GraphSearch()),startBoard,"breadth first search in Graph");
+		//fichasDemo(new BreadthFirstSearch(new GraphSearch()),startBoard,"breadth first search in Graph");
 				
 		//fichasDemo(new DepthFirstSearch(new TreeSearch()),startBoard,"depth first search in Tree");
 				
-		fichasDemo(new DepthFirstSearch(new GraphSearch()),startBoard,"depth first search in Graph");
+		//fichasDemo(new DepthFirstSearch(new GraphSearch()),startBoard,"depth first search in Graph");
 				
 		fichasDemo(new DepthLimitedSearch(3),startBoard,"recursive DLS (3)");
 				
