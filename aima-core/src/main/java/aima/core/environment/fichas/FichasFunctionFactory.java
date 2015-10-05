@@ -17,19 +17,19 @@ public class FichasFunctionFactory {
 
 	public static ActionsFunction getActionsFunction() {
 		if (null == _actionsFunction) {
-			_actionsFunction = new EPActionsFunction();
+			_actionsFunction = new FActionsFunction();
 		}
 		return _actionsFunction;
 	}
 
 	public static ResultFunction getResultFunction() {
 		if (null == _resultFunction) {
-			_resultFunction = new EPResultFunction();
+			_resultFunction = new FResultFunction();
 		}
 		return _resultFunction;
 	}
 
-	private static class EPActionsFunction implements ActionsFunction {
+	private static class FActionsFunction implements ActionsFunction {
 		public Set<Action> actions(Object state) {
 			FichasBoard board = (FichasBoard) state;
 
@@ -58,7 +58,7 @@ public class FichasFunctionFactory {
 		}
 	}
 
-	private static class EPResultFunction implements ResultFunction {
+	private static class FResultFunction implements ResultFunction {
 		public Object result(Object s, Action a) {
 			FichasBoard board = (FichasBoard) s;
 

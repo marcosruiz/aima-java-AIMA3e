@@ -31,13 +31,13 @@ public class FichasDemoPrac1 {
 		
 		//fichasDemo(new BreadthFirstSearch(new TreeSearch()),startBoard,"breadth first search in Tree");
 		
-		//fichasDemo(new BreadthFirstSearch(new GraphSearch()),startBoard,"breadth first search in Graph");
+		fichasDemo(new BreadthFirstSearch(new GraphSearch()),startBoard,"breadth first search in Graph");
 				
 		//fichasDemo(new DepthFirstSearch(new TreeSearch()),startBoard,"depth first search in Tree");
 				
 		//fichasDemo(new DepthFirstSearch(new GraphSearch()),startBoard,"depth first search in Graph");
 				
-		fichasDemo(new DepthLimitedSearch(3),startBoard,"recursive DLS (3)");
+		//fichasDemo(new DepthLimitedSearch(15),startBoard,"recursive DLS ()");
 				
 		fichasDemo(new IterativeDeepeningSearch(),startBoard,"Iterative DLS");
 	}

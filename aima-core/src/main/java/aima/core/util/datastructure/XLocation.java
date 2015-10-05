@@ -116,4 +116,5 @@ public class XLocation {
 	public String toString() {
 		return " ( " + xCoOrdinate + " ) ";
 	}
+
 }

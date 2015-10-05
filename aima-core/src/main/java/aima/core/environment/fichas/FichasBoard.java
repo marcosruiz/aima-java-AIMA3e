@@ -126,7 +126,7 @@ public class FichasBoard {
 		}
 		FichasBoard aBoard = (FichasBoard) o;
 
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 6; i++) {
 			if (this.getPositionOf(i) != aBoard.getPositionOf(i)) {
 				return false;
 			}
