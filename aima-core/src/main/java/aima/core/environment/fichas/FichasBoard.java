@@ -5,7 +5,6 @@ import java.util.List;
 
 import aima.core.agent.Action;
 import aima.core.agent.impl.DynamicAction;
-import aima.core.util.datastructure.XLocation;
 
 /**
  * @author Ravi Mohan
@@ -48,13 +47,13 @@ public class FichasBoard {
 		return state;
 	}
 
-	public int getValueAt(XLocation loc) {
-		return getValueAt(loc.getXCoOrdinate());
+	public int getValueAt(Integer loc) {
+		return getValueAt(loc);
 	}
 
-	public XLocation getLocationOf(int val) {
+	public Integer getLocationOf(int val) {
 		int absPos = getPositionOf(val);
-		return new XLocation(absPos);
+		return new Integer(absPos);
 	}
 
 	public void moveGapRight(int i) {
@@ -77,22 +76,21 @@ public class FichasBoard {
 
 	}
 
-	public List<XLocation> getPositions() {
-		ArrayList<XLocation> retVal = new ArrayList<XLocation>();
+	public List<Integer> getPositions() {
+		ArrayList<Integer> retVal = new ArrayList<Integer>();
 		for (int i = 0; i < 7; i++) {
-			int absPos = getPositionOf(i);
-			XLocation loc = new XLocation(absPos);
+			Integer loc = getPositionOf(i);
 			retVal.add(loc);
 
 		}
 		return retVal;
 	}
 
-	public void setBoard(List<XLocation> locs) {
+	public void setBoard(List<Integer> locs) {
 		int count = 0;
 		for (int i = 0; i < locs.size(); i++) {
-			XLocation loc = locs.get(i);
-			this.setValue(loc.getXCoOrdinate(), count);
+			Integer loc = locs.get(i);
+			this.setValue(loc, count);
 			count = count + 1;
 		}
 	}
