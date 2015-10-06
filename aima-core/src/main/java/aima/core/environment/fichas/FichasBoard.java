@@ -1,7 +1,7 @@
 package aima.core.environment.fichas;
 
-import java.util.ArrayList;
-import java.util.List;
+
+import java.util.Arrays;
 
 import aima.core.agent.Action;
 import aima.core.agent.impl.DynamicAction;
@@ -47,13 +47,8 @@ public class FichasBoard {
 		return state;
 	}
 
-	public int getValueAt(Integer loc) {
-		return getValueAt(loc);
-	}
-
-	public Integer getLocationOf(int val) {
-		int absPos = getPositionOf(val);
-		return new Integer(absPos);
+	public int getValueAt(int loc) {
+		return state[loc];
 	}
 
 	public void moveGapRight(int i) {
@@ -68,7 +63,7 @@ public class FichasBoard {
 
 	public void moveGapLeft(int i) {
 		int gapPos = getGapPosition();
-		if (gapPos >= (0+i)) {
+		if (gapPos >= i) {
 			int valueOnLeft = getValueAt(gapPos - i);
 			setValue(gapPos,valueOnLeft);
 			setValue(gapPos - i, 0);
@@ -76,44 +71,25 @@ public class FichasBoard {
 
 	}
 
-	public List<Integer> getPositions() {
-		ArrayList<Integer> retVal = new ArrayList<Integer>();
-		for (int i = 0; i < 7; i++) {
-			Integer loc = getPositionOf(i);
-			retVal.add(loc);
-
-		}
-		return retVal;
-	}
-
-	public void setBoard(List<Integer> locs) {
-		int count = 0;
-		for (int i = 0; i < locs.size(); i++) {
-			Integer loc = locs.get(i);
-			this.setValue(loc, count);
-			count = count + 1;
-		}
-	}
-
 	public boolean canMoveGap(Action where) {
 		boolean retVal = true;
-		int absPos = getPositionOf(0);
+		int gapPos = getGapPosition();
 		if (where.equals(ONE_LEFT))
-			retVal = (absPos > 0);
+			retVal = (gapPos > 0);
 		else if (where.equals(ONE_RIGHT))
-			retVal = (absPos < 6);
+			retVal = (gapPos < 6);
+		else if (where.equals(TWO_LEFT))
+			retVal = (gapPos > 1);
 		else if (where.equals(TWO_RIGHT))
-			retVal = (absPos > 1);
-		else if (where.equals(TWO_RIGHT))
-			retVal = (absPos < 5);
+			retVal = (gapPos < 5);
+		else if (where.equals(THREE_LEFT))
+			retVal = (gapPos > 2);
 		else if (where.equals(THREE_RIGHT))
-			retVal = (absPos > 2);
-		else if (where.equals(THREE_RIGHT))
-			retVal = (absPos < 4);
+			retVal = (gapPos < 4);
 		return retVal;
 	}
 
-	@Override
+	/*@Override
 	public boolean equals(Object o) {
 
 		if (this == o) {
@@ -125,21 +101,11 @@ public class FichasBoard {
 		FichasBoard aBoard = (FichasBoard) o;
 
 		for (int i = 0; i < 6; i++) {
-			if (this.getPositionOf(i) != aBoard.getPositionOf(i)) {
+			if (this.getValueAt(i) != aBoard.getValueAt(i)) {
 				return false;
 			}
 		}
 		return true;
-	}
-
-	/*@Override
-	public int hashCode() {
-		int result = 17;
-		for (int i = 0; i < 7; i++) {
-			int position = this.getPositionOf(i);
-			result = 37 * result + position;
-		}
-		return result;
 	}*/
 
 	@Override
@@ -154,32 +120,34 @@ public class FichasBoard {
 	// PRIVATE METHODS
 	//
 
-	/**
-	 * Note: The graphic representation maps x values on row numbers (x-axis in
-	 * vertical direction).
-	 */
-	/*private int getXCoord(int absPos) {
-		return absPos;
-	}*/
-
-
-	private int getAbsPosition(int x) {
-		return x;
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + Arrays.hashCode(state);
+		return result;
 	}
 
-	private int getValueAt(int x) {
-		// refactor this use either case or a div/mod soln
-		return state[getAbsPosition(x)];
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		FichasBoard other = (FichasBoard) obj;
+		if (!Arrays.equals(state, other.state))
+			return false;
+		return true;
 	}
+
 
 	private int getGapPosition() {
-		return getPositionOf(0);
-	}
-
-	private int getPositionOf(int val) {
+		int valGap = 0;
 		int retVal = -1;
 		for (int i = 0; i < 7; i++) {
-			if (state[i] == val) {
+			if (state[i] == valGap) {
 				retVal = i;
 			}
 		}
@@ -187,8 +155,7 @@ public class FichasBoard {
 	}
 
 	private void setValue(int x, int val) {
-		int absPos = getAbsPosition(x);
-		state[absPos] = val;
+		state[x] = val;
 
 	}
 }

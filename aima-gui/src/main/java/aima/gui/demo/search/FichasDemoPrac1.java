@@ -26,7 +26,6 @@ import aima.core.search.uninformed.IterativeDeepeningSearch;
 
 public class FichasDemoPrac1 {
 	static FichasBoard startBoard = new FichasBoard(new int[] { 1,1,1,0,2,2,2 });
-
 	public static void main(String[] args) {
 		
 		//fichasDemo(new BreadthFirstSearch(new TreeSearch()),startBoard,"breadth first search in Tree");
@@ -35,10 +34,10 @@ public class FichasDemoPrac1 {
 				
 		//fichasDemo(new DepthFirstSearch(new TreeSearch()),startBoard,"depth first search in Tree");
 				
-		//fichasDemo(new DepthFirstSearch(new GraphSearch()),startBoard,"depth first search in Graph");
+		fichasDemo(new DepthFirstSearch(new GraphSearch()),startBoard,"depth first search in Graph");
 				
-		//fichasDemo(new DepthLimitedSearch(15),startBoard,"recursive DLS ()");
-				
+		fichasDemo(new DepthLimitedSearch(10),startBoard,"recursive DLS (10)");
+						
 		fichasDemo(new IterativeDeepeningSearch(),startBoard,"Iterative DLS");
 	}
 	private static void fichasDemo(Search search, Object initialState, String message) {
@@ -61,16 +60,18 @@ public class FichasDemoPrac1 {
 	}
 	
 	private static void executeActions(List<Action> actions, Problem problem){
-		
-		Object initialState = problem.getInitialState();
-		System.out.println(initialState.toString());
+		Object s = problem.getInitialState();
+		System.out.println("Initial State:");
+		System.out.println(s.toString());
+		System.out.println("---");
 		ResultFunction rf = new FichasFunctionFactory().getResultFunction();
 		for (int i = 0; i < actions.size(); i++) {
 			Action a = actions.get(i);
 			String action = a.toString();
-			Object s = rf.result(initialState, a);
-			System.out.println(s.toString());
+			s = rf.result(s, a);
 			System.out.println(action);
+			System.out.println(s.toString());
+			System.out.println("---");
 		}
 	}
 

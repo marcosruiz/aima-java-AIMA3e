@@ -85,15 +85,18 @@ public class EightPuzzleDemoPrac1 {
 	
 	private static void executeActions(List<Action> actions, Problem problem){
 		
-		Object initialState = problem.getInitialState();
-		System.out.println(initialState.toString());
+		Object s = problem.getInitialState();
+		System.out.println("Estado inicial:");
+		System.out.println(s.toString());
+		System.out.println("---");
 		ResultFunction rf = new EightPuzzleFunctionFactory().getResultFunction();
 		for (int i = 0; i < actions.size(); i++) {
 			Action a = actions.get(i);
 			String action = a.toString();
-			Object s = rf.result(initialState, a);
-			System.out.println(s.toString());
+			s = rf.result(s, a);
 			System.out.println(action);
+			System.out.println(s.toString());
+			System.out.println("---");
 		}
 	}
 
