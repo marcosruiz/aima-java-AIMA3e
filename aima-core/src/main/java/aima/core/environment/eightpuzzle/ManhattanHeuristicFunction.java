@@ -8,50 +8,40 @@ import aima.core.util.datastructure.XYLocation;
  * 
  */
 public class ManhattanHeuristicFunction implements HeuristicFunction {
+    
+    	Object finalState = new EightPuzzleBoard(new int[]{0,1,2,3,4,5,6,7,8});
 
-	public double h(Object state) {
-		EightPuzzleBoard board = (EightPuzzleBoard) state;
+	public double h(Object initialState) {
+		EightPuzzleBoard initialBoard = (EightPuzzleBoard) initialState;
+		EightPuzzleBoard finalBoard = (EightPuzzleBoard) finalState;
 		int retVal = 0;
 		for (int i = 1; i < 9; i++) {
-			XYLocation loc = board.getLocationOf(i);
-			retVal += evaluateManhattanDistanceOf(i, loc);
+			XYLocation locInitial = initialBoard.getLocationOf(i);
+			XYLocation locFinal = finalBoard.getLocationOf(i);
+			retVal += evaluateManhattanDistanceOf(locInitial, locFinal);
 		}
 		return retVal;
 
 	}
+	
+	public void setFinalBoard(Object finalBoard){
+	    this.finalState = finalBoard;
+	}
+	
+	public Object getFinalBoard(){
+	    return finalState;
+	}
 
-	public int evaluateManhattanDistanceOf(int i, XYLocation loc) {
+	public int evaluateManhattanDistanceOf(XYLocation locInitial, XYLocation locFinal) {
 		int retVal = -1;
-		int xpos = loc.getXCoOrdinate();
-		int ypos = loc.getYCoOrdinate();
-		switch (i) {
+		int xposInitial = locInitial.getXCoOrdinate();
+		int yposInitial = locInitial.getYCoOrdinate();
+		
+		int xposFinal = locFinal.getXCoOrdinate();
+		int yposFinal = locFinal.getYCoOrdinate();
+		
+		retVal = Math.abs(xposInitial - xposFinal) + Math.abs(yposInitial - yposFinal);
 
-		case 1:
-			retVal = Math.abs(xpos - 0) + Math.abs(ypos - 1);
-			break;
-		case 2:
-			retVal = Math.abs(xpos - 0) + Math.abs(ypos - 2);
-			break;
-		case 3:
-			retVal = Math.abs(xpos - 1) + Math.abs(ypos - 0);
-			break;
-		case 4:
-			retVal = Math.abs(xpos - 1) + Math.abs(ypos - 1);
-			break;
-		case 5:
-			retVal = Math.abs(xpos - 1) + Math.abs(ypos - 2);
-			break;
-		case 6:
-			retVal = Math.abs(xpos - 2) + Math.abs(ypos - 0);
-			break;
-		case 7:
-			retVal = Math.abs(xpos - 2) + Math.abs(ypos - 1);
-			break;
-		case 8:
-			retVal = Math.abs(xpos - 2) + Math.abs(ypos - 2);
-			break;
-
-		}
 		return retVal;
 	}
 }
