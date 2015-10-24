@@ -36,7 +36,7 @@ public class EightPuzzleDemoPrac2 {
 	    tableOfDepths[i] = i + 2;
 	}
 
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < tableOfDepths.length; i++) {
 	    for (int j = 0; j < NUM_ITER; j++) {
 		int depth = tableOfDepths[i];
 		EightPuzzleBoard initialBoard = GenerateInitialEightPuzzleBoard
@@ -46,9 +46,11 @@ public class EightPuzzleDemoPrac2 {
 
 		eightPuzzleDemo(new BreadthFirstSearch(), initialBoard,
 			finalBoard, i, 0);
-		eightPuzzleDemo(new IterativeDeepeningSearch(), initialBoard,
-			finalBoard, i, 1);
-
+		
+		if(tableOfDepths[i]<=10){
+		    eightPuzzleDemo(new IterativeDeepeningSearch(), initialBoard,
+			    finalBoard, i, 1);
+		}
 		MisplacedTilleHeuristicFunction mthf = new MisplacedTilleHeuristicFunction();
 		mthf.setFinalBoard(finalBoard);
 		eightPuzzleDemo(new AStarSearch(new GraphSearch(), mthf),
@@ -84,12 +86,13 @@ public class EightPuzzleDemoPrac2 {
 	    generatedNodes = Integer.parseInt(generatedNodesString);
 	    Biseccion biseccion = new Biseccion();
 	    biseccion.setGeneratedNodes(generatedNodes);
-	    ramificationFactor = biseccion.metodoDeBiseccion(1.0001, 4.0,
-		    0.001);
+	    biseccion.setDepth(tableOfDepths[row]);
+	    ramificationFactor = biseccion.metodoDeBiseccion(1.0001, 10.0,
+		    Math.pow(Math.E, -10));
 	    // Grabamos resultado en results
 	    double generatedNodesDouble = generatedNodes;
 	    generatedNodesDouble = generatedNodesDouble / 100;
-	    tableOfGeneratedNodes[row][column] += generatedNodes;
+	    tableOfGeneratedNodes[row][column] += generatedNodesDouble;
 	    tableOfRamificationFactor[row][column] += ramificationFactor / 100;
 
 	} catch (Exception e) {
@@ -108,9 +111,9 @@ public class EightPuzzleDemoPrac2 {
 	toReturn += "||   d||    BFS   |    IDS  | A*h(1)  | A*h(2)  ||    BFS  |    IDS  | A*h(1)  | A*h(2)  ||\n";
 	toReturn += "-------------------------------------------------------------------------------------------\n";
 	toReturn += "-------------------------------------------------------------------------------------------\n";
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < tableOfDepths.length; i++) {
 	    toReturn += String.format(
-		    "||%4d||%7d   |%7d  |%7d  |%7d  ||%7.2f  |%7.2f  |%7.2f  |%7.2f  ||\n",
+		    "||%4d||%7.0f   |%7.0f  |%7.0f  |%7.0f  ||%7.2f  |%7.2f  |%7.2f  |%7.2f  ||\n",
 		    tableOfDepths[i], tableOfGeneratedNodes[i][0],
 		    tableOfGeneratedNodes[i][1], tableOfGeneratedNodes[i][2],
 		    tableOfGeneratedNodes[i][3],
