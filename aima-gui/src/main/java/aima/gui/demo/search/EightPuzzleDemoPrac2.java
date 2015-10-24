@@ -12,17 +12,12 @@ import aima.core.environment.eightpuzzle.ManhattanHeuristicFunction;
 import aima.core.environment.eightpuzzle.MisplacedTilleHeuristicFunction;
 import aima.core.search.framework.GraphSearch;
 import aima.core.search.framework.Problem;
-import aima.core.search.framework.ResultFunction;
 import aima.core.search.framework.Search;
 import aima.core.search.framework.SearchAgent;
-import aima.core.search.framework.TreeSearch;
 import aima.core.search.informed.AStarSearch;
-import aima.core.search.informed.GreedyBestFirstSearch;
-import aima.core.search.local.SimulatedAnnealingSearch;
 import aima.core.search.uninformed.BreadthFirstSearch;
-import aima.core.search.uninformed.DepthFirstSearch;
-import aima.core.search.uninformed.DepthLimitedSearch;
 import aima.core.search.uninformed.IterativeDeepeningSearch;
+import aima.core.util.math.Biseccion;
 
 /**
  * @author Ravi Mohan
@@ -30,91 +25,115 @@ import aima.core.search.uninformed.IterativeDeepeningSearch;
  */
 
 public class EightPuzzleDemoPrac2 {
-	static EightPuzzleBoard boardWithThreeMoveSolution = new EightPuzzleBoard(
-			new int[] { 1, 2, 5, 3, 4, 0, 6, 7, 8 });;
+    static double[][] tableOfGeneratedNodes = new double[22][4];
+    static double[][] tableOfRamificationFactor = new double[22][4];
+    static int[] tableOfDepths = new int[22];
 
-	static EightPuzzleBoard random1 = new EightPuzzleBoard(new int[] { 1, 4, 2,
-			7, 5, 8, 3, 0, 6 });
-
-	static EightPuzzleBoard extreme = new EightPuzzleBoard(new int[] { 0, 8, 7,
-			6, 5, 4, 3, 2, 1 });
-
-	public static void main(String[] args) {
-		eightPuzzleDemo(new BreadthFirstSearch(new TreeSearch()),boardWithThreeMoveSolution,"breadth first search in Tree (3moves)");
-		eightPuzzleDemo(new BreadthFirstSearch(new TreeSearch()),random1,"breadth first search in Tree (random1)");
-		//eightPuzzleDemo(new BreadthFirstSearch(new TreeSearch()),extreme,"breadth first search in Tree (extreme)");
-		
-		eightPuzzleDemo(new BreadthFirstSearch(new GraphSearch()),boardWithThreeMoveSolution,"breadth first search in Graph (3moves)");
-		eightPuzzleDemo(new BreadthFirstSearch(new GraphSearch()),random1,"breadth first search in Graph (random1)");
-		eightPuzzleDemo(new BreadthFirstSearch(new GraphSearch()),extreme,"breadth first search in Graph (extreme)");
-		
-		//eightPuzzleDemo(new DepthFirstSearch(new TreeSearch()),boardWithThreeMoveSolution,"depth first search in Tree (3moves)");
-		//eightPuzzleDemo(new DepthFirstSearch(new TreeSearch()),random1,"depth first search in Tree (random1)");
-		//eightPuzzleDemo(new DepthFirstSearch(new TreeSearch()),extreme,"depth first search in Tree (extreme)");
-		
-		eightPuzzleDemo(new DepthFirstSearch(new GraphSearch()),boardWithThreeMoveSolution,"depth first search in Graph (3moves)");
-		eightPuzzleDemo(new DepthFirstSearch(new GraphSearch()),random1,"depth first search in Graph (random1)");
-		eightPuzzleDemo(new DepthFirstSearch(new GraphSearch()),extreme,"depth first search in Graph (extreme)");
-		
-		eightPuzzleDemo(new DepthLimitedSearch(3),boardWithThreeMoveSolution,"recursive DLS (3)(3moves)");
-		eightPuzzleDemo(new DepthLimitedSearch(9),random1,"recursive DLS (9)(random1)");
-		//eightPuzzleDemo(new DepthLimitedSearch(30),extreme,"recursive DLS (30)(extreme)");
-		
-		eightPuzzleDemo(new IterativeDeepeningSearch(),boardWithThreeMoveSolution,"Iterative DLS (3moves)");
-		eightPuzzleDemo(new IterativeDeepeningSearch(),random1,"Iterative DLS (random1)");
-		//eightPuzzleDemo(new IterativeDeepeningSearch(),extreme,"Iterative DLS (extreme)");
-	}
-	private static void eightPuzzleDemo(Search search, Object initialState, String message) {
-		System.out.println("\nEightPuzzleDemo "+message+" -->");
-		try {
-			Problem problem = new Problem(initialState, EightPuzzleFunctionFactory
-					.getActionsFunction(), EightPuzzleFunctionFactory
-					.getResultFunction(), new EightPuzzleGoalTest());
-			long ini = System.currentTimeMillis();
-			SearchAgent agent = new SearchAgent(problem, search);
-			long fin = System.currentTimeMillis();
-			//printActions(agent.getActions());
-			executeActions(agent.getActions(), problem);
-			printInstrumentation(agent.getInstrumentation());
-			System.out.println("time : " + (fin-ini));
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
-	}
-	
-	private static void executeActions(List<Action> actions, Problem problem){
-		
-		Object s = problem.getInitialState();
-		System.out.println("Estado inicial:");
-		System.out.println(s.toString());
-		System.out.println("---");
-		ResultFunction rf = new EightPuzzleFunctionFactory().getResultFunction();
-		for (int i = 0; i < actions.size(); i++) {
-			Action a = actions.get(i);
-			String action = a.toString();
-			s = rf.result(s, a);
-			System.out.println(action);
-			System.out.println(s.toString());
-			System.out.println("---");
-		}
+    public static void main(String[] args) {
+	int NUM_ITER = 100;
+	// Rellenamos la tabla de profundidades
+	for (int i = 0; i < tableOfDepths.length; i++) {
+	    tableOfDepths[i] = i + 2;
 	}
 
-	private static void printInstrumentation(Properties properties) {
-		Iterator<Object> keys = properties.keySet().iterator();
-		while (keys.hasNext()) {
-			String key = (String) keys.next();
-			String property = properties.getProperty(key);
-			System.out.println(key + " : " + property);
-		}
+	for (int i = 0; i < 6; i++) {
+	    for (int j = 0; j < NUM_ITER; j++) {
+		int depth = tableOfDepths[i];
+		EightPuzzleBoard initialBoard = GenerateInitialEightPuzzleBoard
+			.randomIni();
+		EightPuzzleBoard finalBoard = GenerateInitialEightPuzzleBoard
+			.random(depth, initialBoard);
 
+		eightPuzzleDemo(new BreadthFirstSearch(), initialBoard,
+			finalBoard, i, 0);
+		eightPuzzleDemo(new IterativeDeepeningSearch(), initialBoard,
+			finalBoard, i, 1);
+
+		MisplacedTilleHeuristicFunction mthf = new MisplacedTilleHeuristicFunction();
+		mthf.setFinalBoard(finalBoard);
+		eightPuzzleDemo(new AStarSearch(new GraphSearch(), mthf),
+			initialBoard, finalBoard, i, 2);
+
+		ManhattanHeuristicFunction mhf = new ManhattanHeuristicFunction();
+		mhf.setFinalBoard(finalBoard);
+		eightPuzzleDemo(new AStarSearch(new GraphSearch(), mhf),
+			initialBoard, finalBoard, i, 3);
+
+	    }
+	}
+	String result = printResults(tableOfDepths, tableOfGeneratedNodes,
+		tableOfRamificationFactor);
+	System.out.println(result);
+
+    }
+
+    private static void eightPuzzleDemo(Search search, Object initialState,
+	    Object finalState, int row, int column) {
+	try {
+	    int generatedNodes;
+	    double ramificationFactor;
+	    EightPuzzleGoalTest epgt = new EightPuzzleGoalTest();
+	    epgt.setGoalState((EightPuzzleBoard) finalState);
+	    Problem problem = new Problem(initialState,
+		    EightPuzzleFunctionFactory.getActionsFunction(),
+		    EightPuzzleFunctionFactory.getResultFunction(), epgt);
+	    SearchAgent agent = new SearchAgent(problem, search);
+
+	    String generatedNodesString = print(agent.getInstrumentation(),
+		    "nodesGenerated");
+	    generatedNodes = Integer.parseInt(generatedNodesString);
+	    Biseccion biseccion = new Biseccion();
+	    biseccion.setGeneratedNodes(generatedNodes);
+	    ramificationFactor = biseccion.metodoDeBiseccion(1.0001, 4.0,
+		    0.001);
+	    // Grabamos resultado en results
+	    double generatedNodesDouble = generatedNodes;
+	    generatedNodesDouble = generatedNodesDouble / 100;
+	    tableOfGeneratedNodes[row][column] += generatedNodes;
+	    tableOfRamificationFactor[row][column] += ramificationFactor / 100;
+
+	} catch (Exception e) {
+	    e.printStackTrace();
 	}
 
-	private static void printActions(List<Action> actions) {
-		for (int i = 0; i < actions.size(); i++) {
-			String action = actions.get(i).toString();
-			System.out.println(action);
-		}
+    }
+
+    private static String printResults(int[] tableOfDepths,
+	    double[][] tableOfGeneratedNodes,
+	    double[][] tableOfRamificationFactor) {
+	String toReturn = "";
+	toReturn += "-------------------------------------------------------------------------------------------\n";
+	toReturn += "||    ||      Nodos Generados                   ||                  b*                   ||\n";
+	toReturn += "-------------------------------------------------------------------------------------------\n";
+	toReturn += "||   d||    BFS   |    IDS  | A*h(1)  | A*h(2)  ||    BFS  |    IDS  | A*h(1)  | A*h(2)  ||\n";
+	toReturn += "-------------------------------------------------------------------------------------------\n";
+	toReturn += "-------------------------------------------------------------------------------------------\n";
+	for (int i = 0; i < 6; i++) {
+	    toReturn += String.format(
+		    "||%4d||%7d   |%7d  |%7d  |%7d  ||%7.2f  |%7.2f  |%7.2f  |%7.2f  ||\n",
+		    tableOfDepths[i], tableOfGeneratedNodes[i][0],
+		    tableOfGeneratedNodes[i][1], tableOfGeneratedNodes[i][2],
+		    tableOfGeneratedNodes[i][3],
+		    tableOfRamificationFactor[i][0],
+		    tableOfRamificationFactor[i][1],
+		    tableOfRamificationFactor[i][2],
+		    tableOfRamificationFactor[i][3]);
 	}
+	toReturn += "-------------------------------------------------------------------------------------------\n";
+	return toReturn;
+    }
+
+    private static String print(Properties properties, String key) {
+	Iterator<Object> keys = properties.keySet().iterator();
+	String property = properties.getProperty(key);
+	return property;
+    }
+
+    private static void printActions(List<Action> actions) {
+	for (int i = 0; i < actions.size(); i++) {
+	    String action = actions.get(i).toString();
+	    System.out.println(action);
+	}
+    }
 
 }

@@ -14,4 +14,8 @@ public class EightPuzzleGoalTest implements GoalTest {
 		EightPuzzleBoard board = (EightPuzzleBoard) state;
 		return board.equals(goal);
 	}
+	
+	public void setGoalState(EightPuzzleBoard goal){
+	    this.goal = goal;
+	}
 }
