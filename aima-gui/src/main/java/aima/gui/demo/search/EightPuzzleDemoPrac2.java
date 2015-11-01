@@ -29,50 +29,98 @@ public class EightPuzzleDemoPrac2 {
     static int[] numIter = new int[22];
     static double[][] tableOfRamificationFactor = new double[22][4];
     static int[] tableOfDepths = new int[22];
+    static final int NUM_ITER = 100;
 
+    /**
+     * Se realizan NUM_ITER pruebas por cada profundidad indicada en
+     * tableOfDepths y se muestran por pantalla los resultados. Dichos
+     * resultados incluyen la media de los nodos generados y la media del factor
+     * de ramificación.
+     * 
+     * @param args
+     */
     public static void main(String[] args) {
-	int NUM_ITER = 100;
+
 	// Rellenamos la tabla de profundidades
 	for (int i = 0; i < tableOfDepths.length; i++) {
 	    tableOfDepths[i] = i + 2;
 	}
 
+	// Inicializamos variables
+	int depth;
+	EightPuzzleBoard initialBoard;
+	EightPuzzleBoard finalBoard;
+	boolean good; // indica si profundidad teorica == profundidad real
+	MisplacedTilleHeuristicFunction mthf;
+	ManhattanHeuristicFunction mhf;
+
 	for (int i = 0; i < tableOfDepths.length; i++) {
+	    // Iteramos NUM_ITER pruebas
 	    while (numIter[i] < NUM_ITER) {
-		int depth = tableOfDepths[i];
-		EightPuzzleBoard initialBoard = GenerateInitialEightPuzzleBoard
-			.randomIni();
-		EightPuzzleBoard finalBoard = GenerateInitialEightPuzzleBoard
-			.random(depth, initialBoard);
-
-		boolean good = eightPuzzleDemo(new BreadthFirstSearch(),
-			initialBoard, finalBoard, i, 0);
-
+		depth = tableOfDepths[i];
+		// Generamos el tablero inicial y el tablero solución a la
+		// profundidad deseada
+		initialBoard = GenerateInitialEightPuzzleBoard.randomIni();
+		finalBoard = GenerateInitialEightPuzzleBoard.random(depth,
+			initialBoard);
+		// Prueba BFS
+		good = eightPuzzleDemo(new BreadthFirstSearch(), initialBoard,
+			finalBoard, i, 0);
+		/*
+		 * Si la profundidad teorica == profundiad real realizamos las
+		 * demás búsquedas
+		 */
 		if (good) {
+		    // Prueba IDS
 		    if (tableOfDepths[i] <= 10) {
 			eightPuzzleDemo(new IterativeDeepeningSearch(),
 				initialBoard, finalBoard, i, 1);
 		    }
-		    MisplacedTilleHeuristicFunction mthf = new MisplacedTilleHeuristicFunction();
+		    // Prueba A* con Heuristica MisplacedTilleHeuristicFunction
+		    mthf = new MisplacedTilleHeuristicFunction();
 		    mthf.setFinalBoard(finalBoard);
 		    eightPuzzleDemo(new AStarSearch(new GraphSearch(), mthf),
 			    initialBoard, finalBoard, i, 2);
-
-		    ManhattanHeuristicFunction mhf = new ManhattanHeuristicFunction();
+		    // Prueba A* con Heuristica ManhattanHeuristicFunction
+		    mhf = new ManhattanHeuristicFunction();
 		    mhf.setFinalBoard(finalBoard);
 		    eightPuzzleDemo(new AStarSearch(new GraphSearch(), mhf),
 			    initialBoard, finalBoard, i, 3);
+		    // Sumamos el número de pruebas
 		    numIter[i]++;
 		}
 	    }
-	    System.out.println(i);
+	    // Descomentar si queremos saber a que profundiad estamos
+	    // System.out.printf("%d,",i);
 	}
+	// Imprimimos resultados
 	String result = printResults(tableOfDepths, tableOfGeneratedNodes,
 		tableOfRamificationFactor);
 	System.out.println(result);
 
     }
 
+    /**
+     * Método que se encarga de realizar la búsqueda indicada sumando a lo que
+     * ya hay en la fila row y columna column indicadas tanto en
+     * tableOfGeneratedNodes como en tableOfRamificationFactor los nodos
+     * generados y el factor de ramificación respectivamente. Devuelve true si y
+     * solo si tableOfDepths[row] es igual a la profundidad a la que se haya la
+     * solucion (pathCost)
+     * 
+     * @param search
+     *            indica el algoritmo de búsqueda a usar
+     * @param initialState
+     *            indica el estado inicial del tablero
+     * @param finalState
+     *            indica el estado objetivo del tablero
+     * @param row
+     *            indica la fila dónde guardar los datos tanto en
+     *            tableOfGeneratedNodes como en tableOfRamificationFactor
+     * @param column
+     *            indica la columna dónde guardar los datos
+     * @return
+     */
     private static boolean eightPuzzleDemo(Search search, Object initialState,
 	    Object finalState, int row, int column) {
 	boolean good = false;
@@ -86,27 +134,27 @@ public class EightPuzzleDemoPrac2 {
 		    EightPuzzleFunctionFactory.getActionsFunction(),
 		    EightPuzzleFunctionFactory.getResultFunction(), epgt);
 	    SearchAgent agent = new SearchAgent(problem, search);
-
+	    // Leemos nodos generados
 	    String generatedNodesString = print(agent.getInstrumentation(),
 		    "nodesGenerated");
+	    // Comprobamos que pathCost == la profundidad esperada de la
+	    // solución
 	    String pathCostString = print(agent.getInstrumentation(),
 		    "pathCost");
 	    double pathCost = Double.parseDouble(pathCostString);
 	    good = (pathCost == depth);
 	    if (good) {
 		generatedNodes = Integer.parseInt(generatedNodesString);
+		// Calculamos el factor de ramificación a partir de los nodos
+		// generados
 		Biseccion biseccion = new Biseccion();
 		biseccion.setGeneratedNodes(generatedNodes);
 		biseccion.setDepth(tableOfDepths[row]);
 		ramificationFactor = biseccion.metodoDeBiseccion(1.0001, 4.0,
 			Math.pow(Math.E, -10));
-		// Grabamos resultado en results
+		// Grabamos los resultados en results, sumando a lo que ya hay.
 		tableOfGeneratedNodes[row][column] += generatedNodes;
 		tableOfRamificationFactor[row][column] += ramificationFactor;
-		//System.out.println("TRUE");
-	    }
-	    else{
-		//System.out.println("FALSE");
 	    }
 
 	} catch (Exception e) {
@@ -115,6 +163,15 @@ public class EightPuzzleDemoPrac2 {
 	return good;
     }
 
+    /**
+     * Se muestra por salida estandar una tabla con las medias de los resultados
+     * obtenidos.
+     * 
+     * @param tableOfDepths
+     * @param tableOfGeneratedNodes
+     * @param tableOfRamificationFactor
+     * @return
+     */
     private static String printResults(int[] tableOfDepths,
 	    int[][] tableOfGeneratedNodes,
 	    double[][] tableOfRamificationFactor) {
@@ -128,7 +185,7 @@ public class EightPuzzleDemoPrac2 {
 	for (int i = 0; i < tableOfDepths.length; i++) {
 	    toReturn += String.format(
 		    "||%4d||%7d   |%7d  |%7d  |%7d  ||%7.2f  |%7.2f  |%7.2f  |%7.2f  ||\n",
-		    tableOfDepths[i], tableOfGeneratedNodes[i][0] / 100,
+		    tableOfDepths[i], tableOfGeneratedNodes[i][0] / numIter[i],
 		    tableOfGeneratedNodes[i][1] / numIter[i],
 		    tableOfGeneratedNodes[i][2] / numIter[i],
 		    tableOfGeneratedNodes[i][3] / numIter[i],
@@ -141,17 +198,17 @@ public class EightPuzzleDemoPrac2 {
 	return toReturn;
     }
 
+    /**
+     * Devuelve un string con el valor de la clave key
+     * 
+     * @param properties
+     * @param key
+     * @return
+     */
     private static String print(Properties properties, String key) {
 	Iterator<Object> keys = properties.keySet().iterator();
 	String property = properties.getProperty(key);
 	return property;
-    }
-
-    private static void printActions(List<Action> actions) {
-	for (int i = 0; i < actions.size(); i++) {
-	    String action = actions.get(i).toString();
-	    System.out.println(action);
-	}
     }
 
 }
