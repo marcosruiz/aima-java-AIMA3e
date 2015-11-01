@@ -1,0 +1,94 @@
+\documentclass[a4paper]{article}
+
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage[colorinlistoftodos]{todonotes}
+\usepackage{vmargin}
+\usepackage{listings}
+
+\setpapersize{A4}
+
+\setmargins{2.5cm} % margen izquierdo
+{1.5cm} % margen superior
+{16.5cm} % anchura del texto
+{23.42cm} % altura del texto
+{10pt} % altura de los encabezados
+{1cm} % espacio entre el texto y los encabezados
+{0pt} % altura del pie de página
+{2cm} % espacio entre el texto y el pie de página
+
+\lstset{
+
+}
+
+\title{Práctica 2 \\ Inteligencia Artificial \\ \large Universidad de Zaragoza}
+
+
+\author{Marcos Ruiz García, 648045}
+
+\date{\today}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+
+\section{Introducción}
+
+\section{Tareas}
+
+
+\subsection{Implementación de la clase Biseccion}
+
+
+\subsection{Generación de 100 experimentos aleatorios de la profundidad deseada}
+
+\subsection{Reescribir las heurísticas}
+
+\subsubsection{ManhattanHeuristicFunction}
+
+\subsubsection{MisplacedTilleHeuristicFunction}
+
+\section{Resultados}
+
+\begin{lstlisting}
+-------------------------------------------------------------------------------------------
+||    ||      Nodos Generados                   ||                  b*                   ||
+-------------------------------------------------------------------------------------------
+||   d||    BFS   |    IDS  | A*h(1)  | A*h(2)  ||    BFS  |    IDS  | A*h(1)  | A*h(2)  ||
+-------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------
+||   2||      7   |     10  |      5  |      5  ||   2,27  |   2,71  |   1,93  |   1,93  ||
+||   3||     18   |     32  |      9  |      8  ||   2,22  |   2,76  |   1,69  |   1,61  ||
+||   4||     37   |     95  |     12  |     11  ||   2,12  |   2,73  |   1,51  |   1,46  ||
+||   5||     68   |    248  |     17  |     14  ||   2,04  |   2,60  |   1,44  |   1,37  ||
+||   6||    122   |    757  |     24  |     17  ||   1,98  |   2,74  |   1,41  |   1,32  ||
+||   7||    223   |   2137  |     34  |     23  ||   1,95  |   2,60  |   1,39  |   1,30  ||
+||   8||    368   |   5012  |     51  |     29  ||   1,91  |   2,29  |   1,40  |   1,28  ||
+||   9||    619   |  15138  |     76  |     37  ||   1,88  |   2,36  |   1,41  |   1,27  ||
+||  10||   1015   |  42045  |    113  |     46  ||   1,85  |   2,41  |   1,42  |   1,26  ||
+||  11||   1639   |      0  |    163  |     59  ||   1,82  |   0,00  |   1,42  |   1,26  ||
+||  12||   2700   |      0  |    276  |     93  ||   1,80  |   0,00  |   1,45  |   1,28  ||
+||  13||   4410   |      0  |    415  |    118  ||   1,79  |   0,00  |   1,45  |   1,28  ||
+||  14||   7025   |      0  |    656  |    169  ||   1,77  |   0,00  |   1,46  |   1,29  ||
+||  15||  11132   |      0  |   1041  |    225  ||   1,76  |   0,00  |   1,47  |   1,29  ||
+||  16||  17590   |      0  |   1554  |    336  ||   1,75  |   0,00  |   1,47  |   1,30  ||
+||  17||  27661   |      0  |   2434  |    432  ||   1,73  |   0,00  |   1,48  |   1,30  ||
+||  18||  42556   |      0  |   3830  |    568  ||   1,72  |   0,00  |   1,48  |   1,30  ||
+||  19||  63124   |      0  |   5618  |    833  ||   1,71  |   0,00  |   1,48  |   1,31  ||
+||  20||  92029   |      0  |   9262  |   1006  ||   1,69  |   0,00  |   1,49  |   1,31  ||
+||  21|| 129084   |      0  |  13057  |   1330  ||   1,68  |   0,00  |   1,49  |   1,31  ||
+||  22|| 174930   |      0  |  21279  |   1790  ||   1,66  |   0,00  |   1,50  |   1,31  ||
+||  23|| 228050   |      0  |  29446  |   2016  ||   1,64  |   0,00  |   1,49  |   1,30  ||
+||  24|| 286605   |      0  |  47163  |   3282  ||   1,62  |   0,00  |   1,50  |   1,31  ||
+-------------------------------------------------------------------------------------------
+\end{lstlisting}
+
+
+
+\section{Conclusión}
+
+
+\end{document}

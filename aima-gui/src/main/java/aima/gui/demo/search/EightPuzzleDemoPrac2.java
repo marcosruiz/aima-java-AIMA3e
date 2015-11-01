@@ -25,7 +25,8 @@ import aima.core.util.math.Biseccion;
  */
 
 public class EightPuzzleDemoPrac2 {
-    static double[][] tableOfGeneratedNodes = new double[22][4];
+    static int[][] tableOfGeneratedNodes = new int[22][4];
+    static int[] numIter = new int[22];
     static double[][] tableOfRamificationFactor = new double[22][4];
     static int[] tableOfDepths = new int[22];
 
@@ -37,31 +38,34 @@ public class EightPuzzleDemoPrac2 {
 	}
 
 	for (int i = 0; i < tableOfDepths.length; i++) {
-	    for (int j = 0; j < NUM_ITER; j++) {
+	    while (numIter[i] < NUM_ITER) {
 		int depth = tableOfDepths[i];
 		EightPuzzleBoard initialBoard = GenerateInitialEightPuzzleBoard
 			.randomIni();
 		EightPuzzleBoard finalBoard = GenerateInitialEightPuzzleBoard
 			.random(depth, initialBoard);
 
-		eightPuzzleDemo(new BreadthFirstSearch(), initialBoard,
-			finalBoard, i, 0);
-		
-		if(tableOfDepths[i]<=10){
-		    eightPuzzleDemo(new IterativeDeepeningSearch(), initialBoard,
-			    finalBoard, i, 1);
+		boolean good = eightPuzzleDemo(new BreadthFirstSearch(),
+			initialBoard, finalBoard, i, 0);
+
+		if (good) {
+		    if (tableOfDepths[i] <= 10) {
+			eightPuzzleDemo(new IterativeDeepeningSearch(),
+				initialBoard, finalBoard, i, 1);
+		    }
+		    MisplacedTilleHeuristicFunction mthf = new MisplacedTilleHeuristicFunction();
+		    mthf.setFinalBoard(finalBoard);
+		    eightPuzzleDemo(new AStarSearch(new GraphSearch(), mthf),
+			    initialBoard, finalBoard, i, 2);
+
+		    ManhattanHeuristicFunction mhf = new ManhattanHeuristicFunction();
+		    mhf.setFinalBoard(finalBoard);
+		    eightPuzzleDemo(new AStarSearch(new GraphSearch(), mhf),
+			    initialBoard, finalBoard, i, 3);
+		    numIter[i]++;
 		}
-		MisplacedTilleHeuristicFunction mthf = new MisplacedTilleHeuristicFunction();
-		mthf.setFinalBoard(finalBoard);
-		eightPuzzleDemo(new AStarSearch(new GraphSearch(), mthf),
-			initialBoard, finalBoard, i, 2);
-
-		ManhattanHeuristicFunction mhf = new ManhattanHeuristicFunction();
-		mhf.setFinalBoard(finalBoard);
-		eightPuzzleDemo(new AStarSearch(new GraphSearch(), mhf),
-			initialBoard, finalBoard, i, 3);
-
 	    }
+	    System.out.println(i);
 	}
 	String result = printResults(tableOfDepths, tableOfGeneratedNodes,
 		tableOfRamificationFactor);
@@ -69,9 +73,11 @@ public class EightPuzzleDemoPrac2 {
 
     }
 
-    private static void eightPuzzleDemo(Search search, Object initialState,
+    private static boolean eightPuzzleDemo(Search search, Object initialState,
 	    Object finalState, int row, int column) {
+	boolean good = false;
 	try {
+	    double depth = tableOfDepths[row];
 	    int generatedNodes;
 	    double ramificationFactor;
 	    EightPuzzleGoalTest epgt = new EightPuzzleGoalTest();
@@ -83,26 +89,34 @@ public class EightPuzzleDemoPrac2 {
 
 	    String generatedNodesString = print(agent.getInstrumentation(),
 		    "nodesGenerated");
-	    generatedNodes = Integer.parseInt(generatedNodesString);
-	    Biseccion biseccion = new Biseccion();
-	    biseccion.setGeneratedNodes(generatedNodes);
-	    biseccion.setDepth(tableOfDepths[row]);
-	    ramificationFactor = biseccion.metodoDeBiseccion(1.0001, 10.0,
-		    Math.pow(Math.E, -10));
-	    // Grabamos resultado en results
-	    double generatedNodesDouble = generatedNodes;
-	    generatedNodesDouble = generatedNodesDouble / 100;
-	    tableOfGeneratedNodes[row][column] += generatedNodesDouble;
-	    tableOfRamificationFactor[row][column] += ramificationFactor / 100;
+	    String pathCostString = print(agent.getInstrumentation(),
+		    "pathCost");
+	    double pathCost = Double.parseDouble(pathCostString);
+	    good = (pathCost == depth);
+	    if (good) {
+		generatedNodes = Integer.parseInt(generatedNodesString);
+		Biseccion biseccion = new Biseccion();
+		biseccion.setGeneratedNodes(generatedNodes);
+		biseccion.setDepth(tableOfDepths[row]);
+		ramificationFactor = biseccion.metodoDeBiseccion(1.0001, 4.0,
+			Math.pow(Math.E, -10));
+		// Grabamos resultado en results
+		tableOfGeneratedNodes[row][column] += generatedNodes;
+		tableOfRamificationFactor[row][column] += ramificationFactor;
+		//System.out.println("TRUE");
+	    }
+	    else{
+		//System.out.println("FALSE");
+	    }
 
 	} catch (Exception e) {
 	    e.printStackTrace();
 	}
-
+	return good;
     }
 
     private static String printResults(int[] tableOfDepths,
-	    double[][] tableOfGeneratedNodes,
+	    int[][] tableOfGeneratedNodes,
 	    double[][] tableOfRamificationFactor) {
 	String toReturn = "";
 	toReturn += "-------------------------------------------------------------------------------------------\n";
@@ -113,14 +127,15 @@ public class EightPuzzleDemoPrac2 {
 	toReturn += "-------------------------------------------------------------------------------------------\n";
 	for (int i = 0; i < tableOfDepths.length; i++) {
 	    toReturn += String.format(
-		    "||%4d||%7.0f   |%7.0f  |%7.0f  |%7.0f  ||%7.2f  |%7.2f  |%7.2f  |%7.2f  ||\n",
-		    tableOfDepths[i], tableOfGeneratedNodes[i][0],
-		    tableOfGeneratedNodes[i][1], tableOfGeneratedNodes[i][2],
-		    tableOfGeneratedNodes[i][3],
-		    tableOfRamificationFactor[i][0],
-		    tableOfRamificationFactor[i][1],
-		    tableOfRamificationFactor[i][2],
-		    tableOfRamificationFactor[i][3]);
+		    "||%4d||%7d   |%7d  |%7d  |%7d  ||%7.2f  |%7.2f  |%7.2f  |%7.2f  ||\n",
+		    tableOfDepths[i], tableOfGeneratedNodes[i][0] / 100,
+		    tableOfGeneratedNodes[i][1] / numIter[i],
+		    tableOfGeneratedNodes[i][2] / numIter[i],
+		    tableOfGeneratedNodes[i][3] / numIter[i],
+		    tableOfRamificationFactor[i][0] / numIter[i],
+		    tableOfRamificationFactor[i][1] / numIter[i],
+		    tableOfRamificationFactor[i][2] / numIter[i],
+		    tableOfRamificationFactor[i][3] / numIter[i]);
 	}
 	toReturn += "-------------------------------------------------------------------------------------------\n";
 	return toReturn;

@@ -7,3 +7,9 @@
 #Eclipse
 .settings/
 
+# Memorias
+mem/*/*.log
+mem/*/*.aux
+mem/*/*.pdf
+mem/*/*.gz
+mem/*/*.toc
