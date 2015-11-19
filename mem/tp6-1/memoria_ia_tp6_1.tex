@@ -7,6 +7,11 @@
 \usepackage[colorinlistoftodos]{todonotes}
 \usepackage{vmargin}
 \usepackage{listings}
+% \usepackage[T1]{fontenc}
+\usepackage{color}
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
 
 \setpapersize{A4}
 
@@ -19,6 +24,37 @@
 {0pt} % altura del pie de página
 {2cm} % espacio entre el texto y el pie de página
 
+% \lstset{breaklines=true, basicstyle=\footnotesize, frame=single}
+\lstset{ frame=Ltb,
+framerule=0pt,
+aboveskip=0.5cm,
+framextopmargin=3pt,
+framexbottommargin=3pt,
+framexleftmargin=0.4cm,
+framesep=0pt,
+rulesep=.4pt,
+backgroundcolor=\color{gray97},
+rulesepcolor=\color{black},
+%
+stringstyle=\ttfamily,
+showstringspaces = false,
+basicstyle=\small\ttfamily,
+commentstyle=\color{gray45},
+keywordstyle=\bfseries,
+%
+numbers=left,
+numbersep=15pt,
+numberstyle=\tiny,
+numberfirstline = false,
+breaklines=true,
+}
+\lstdefinestyle{consola}
+{basicstyle=\scriptsize\bf\ttfamily,
+backgroundcolor=\color{gray75},
+}
+\lstdefinestyle{Java}
+{language=Java,
+}
 
 \title{TP6-1 \\ Inteligencia Artificial \\ \large Universidad de Zaragoza}
 
@@ -34,13 +70,120 @@
 
 \section{Introducción}
 Se nos ha encargado realizar una serie de tareas para que el algoritmo de búsqueda Hill-Climbing permita realizar hasta 100 pasos cuando está en un llano para mejorar el porcentaje de éxito de manera notable.
+
 \section{Tareas}
+
 \subsection{Tarea 1}
+Para la realización de la primera tarea se han realizado 1000 pruebas para sacar las estadísticas mostradas en la sección \ref{sec:salida1}.
+Por cada iteración, para saber si se ha encontrado la solución se usa el siguiente booleano:
+\begin{lstlisting}[style=Java]
+solucionEncontrada = (search.getOutcome() == SearchOutcome.SOLUTION_FOUND);
+\end{lstlisting}
+Posteriormente se cuentan las veces que se ha encontrado la solución y se calcula el porcentaje de éxito.
+Además, para hallar el número de pasos,tanto en caso de encontrar la solución como en el caso contrario, se usa una instrucción similar a esta:
+\begin{lstlisting}[style=Java]
+pasos += Integer.parseInt(agent.getInstrumentation().getProperty("nodesExpanded"))- 1;
+\end{lstlisting}
+\subsubsection{Salida}\label{sec:salida1}
+\begin{lstlisting}[style=consola, numbers=none]
+EJERCICIO1:
+HILL CLIMBING SEARCH:
+Porcentaje de exito: 15 %
+Media de pasos en acierto: 4
+Media de pasos en fallo: 3
+\end{lstlisting}
+
 \subsection{Tarea 2}
+Para la realización de la segunda tarea se han realizado 1000 pruebas como en la Tarea 1. En esta tarea se ha modificado el código del método:
+\begin{lstlisting}[style=Java]
+public List<Action> search(Problem p);
+\end{lstlisting}
+Se han añadido dos listas:
+\begin{lstlisting}[style=Java]
+List<Node> listaNodosLlanos = new ArrayList<>();
+List<Node> pendientesDeBorrar = new ArrayList<>();
+\end{lstlisting}
+Ambas sirven para eliminar los nodos repetidos dentro de una llanura y así evitar entrar en bucles dentro de esta.
+También se añadido la variable entera numLlanos para llevar la cuenta de nodos visitados cuando estamos en un llano la cual vuelve a 0 cada vez que salimos de un llano para prepararse al siguiente.
+\subsubsection{Salida}
+\begin{lstlisting}[style=consola, numbers=none]
+EJERCICIO2:
+HILL CLIMBING SEARCH FLAT:
+Porcentaje de exito: 74 %
+Media de pasos en acierto: 9
+Media de pasos en fallo: 9
+\end{lstlisting}
+
 \subsection{Tarea 3}
+Se desarrollado el código de la clase:
+\begin{lstlisting}[style=Java]
+private static void nQueensHillClimbingSearchFlat(boolean ito);
+\end{lstlisting}
+Esta clase, tanto en el caso que no entra en los llanos como en el caso de que sí, ejecuta en un bucle hasta que llega a una solución correcta. Tras esto, se puede observar que debido a no entrar en los llanos necesitamos numerosos intentos para llegar a una solución (eso sí, cuando encontramos una solución la tenemos muy cerca).
+\subsubsection{Salida}
+\begin{lstlisting}[style=consola, numbers=none]
+EJERCICIO3: REINICIAR HASTA ENCONTRAR LA SOLUCION
+
+HILL CLIMBING SEARCH:
+Action[name==moveQueenTo, location== ( 1 , 7 ) ]
+Action[name==moveQueenTo, location== ( 4 , 0 ) ]
+Action[name==moveQueenTo, location== ( 3 , 2 ) ]
+Action[name==moveQueenTo, location== ( 6 , 1 ) ]
+Action[name==moveQueenTo, location== ( 7 , 5 ) ]
+Search Outcome=SOLUTION_FOUND
+Final State=
+----Q---
+------Q-
+---Q----
+Q-------
+--Q-----
+-------Q
+-----Q--
+-Q------
+
+nodesExpanded : 6
+nodesGenerated : 336
+Porcentaje de exito: 5 %
+Pasos en acierto: 5
+Media de pasos en fallo: 3
+
+HILL CLIMBING SEARCH FLAT:
+Action[name==moveQueenTo, location== ( 2 , 7 ) ]
+Action[name==moveQueenTo, location== ( 1 , 4 ) ]
+Action[name==moveQueenTo, location== ( 5 , 2 ) ]
+Action[name==moveQueenTo, location== ( 3 , 3 ) ]
+Action[name==moveQueenTo, location== ( 2 , 6 ) ]
+Action[name==moveQueenTo, location== ( 6 , 7 ) ]
+Action[name==moveQueenTo, location== ( 0 , 2 ) ]
+Action[name==moveQueenTo, location== ( 2 , 1 ) ]
+Action[name==moveQueenTo, location== ( 0 , 6 ) ]
+Action[name==moveQueenTo, location== ( 3 , 5 ) ]
+Action[name==moveQueenTo, location== ( 3 , 7 ) ]
+Action[name==moveQueenTo, location== ( 6 , 3 ) ]
+Action[name==moveQueenTo, location== ( 5 , 6 ) ]
+Action[name==moveQueenTo, location== ( 0 , 2 ) ]
+Search Outcome=SOLUTION_FOUND
+Final State=
+----Q---
+--Q-----
+Q-------
+------Q-
+-Q------
+-------Q
+-----Q--
+---Q----
+
+nodesExpanded : 15
+nodesGenerated : 840
+Porcentaje de exito: 100 %
+Pasos en acierto: 14
+No ha habido fallos
+\end{lstlisting}
+
 \subsection{Tarea 4}
+La Tarea 4 consta de la realización de esta misma memoria.
 
 \section{Conclusión}
-
+Tras la realización de esta práctica nos hemos dado cuenta que el algoritmo de búsqueda Hill Climbing, aunque es muy rápido y la solución que encuentra la encuentra en un número de pasos muy reducido, al permitir a dicho algoritmo que pueda atravesar llanos de hasta 100 nodos, aumentamos drásticamente el porcentaje de éxito. Este aumento de porcentaje de éxito no es gratis, ya que las soluciones que encuentra suele ser en un mayor número de pasos.
 
 \end{document}
